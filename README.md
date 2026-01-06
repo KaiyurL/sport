@@ -104,6 +104,7 @@ npm run dev
   - 构建产物：`npm run build`
   - 本地预览：`npm run preview`
 - 后端：
+  - 直接下载并运行 JAR：仓库文件 `pdmadmin/target/pdmadmin-0.0.1-SNAPSHOT.jar`，下载后执行 `java -jar pdmadmin-0.0.1-SNAPSHOT.jar`
   - 使用 Maven Wrapper 启动：`.\mvnw.cmd clean spring-boot:run`
   - 常规 Maven 启动：`mvn clean spring-boot:run`
   - 接口文档：`http://localhost:8080/pdmadmin/doc.html`
@@ -170,9 +171,3 @@ npm run dev
   - 在管理员用户管理中演示新增、修改、分页筛选与批量删除（观察事务级联效果）
 - 统计页：
   - 展示总时长与总消耗、按类型聚合效果
-
-## 高分要点达成
-- 分页查询功能（后端分页）：统一使用 MyBatis-Plus Page 与分页拦截器
-- GROUP BY 统计功能：概览与按类型聚合接口已提供
-- 事务支持：管理员批量删除用户采用事务实现级联一致性
-- 前端载体：Vue3 + Element Plus，美观且交互合理
