@@ -107,6 +107,7 @@ npm run dev
   - 构建产物：`npm run build`
   - 本地预览：`npm run preview`
 - 后端：
+  - 直接下载并运行 JAR：仓库文件 `pdmadmin/target/pdmadmin-0.0.1-SNAPSHOT.jar`，下载后执行 `java -jar pdmadmin-0.0.1-SNAPSHOT.jar`
   - 使用 Maven Wrapper 启动：`.\mvnw.cmd clean spring-boot:run`
   - 常规 Maven 启动：`mvn clean spring-boot:run`
   - 接口文档：`http://localhost:8080/pdmadmin/doc.html`
