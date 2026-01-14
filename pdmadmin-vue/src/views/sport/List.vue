@@ -37,6 +37,15 @@
             {{ scope.row.recordTime ? scope.row.recordTime.replace('T', ' ') : '' }}
           </template>
         </el-table-column>
+        <el-table-column label="结束时间" width="180">
+          <template #default="scope">
+            {{
+              scope.row.recordTime && scope.row.durationMin != null
+                ? dayjs(scope.row.recordTime.replace('T', ' ')).add(scope.row.durationMin, 'minute').format('YYYY-MM-DD HH:mm:ss')
+                : ''
+            }}
+          </template>
+        </el-table-column>
         <el-table-column prop="durationMin" label="时长(分)" width="100" />
         <el-table-column prop="calories" label="消耗(千卡)" width="100" />
         <el-table-column prop="notes" label="备注" show-overflow-tooltip />
@@ -256,6 +265,8 @@ const handleSubmit = async () => {
         ElMessage.success(form.id ? '修改成功' : '新增成功');
         dialogVisible.value = false;
         getList();
+      } else {
+        ElMessage.error(res.message || '操作失败');
       }
     }
   });

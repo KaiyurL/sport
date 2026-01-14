@@ -13,6 +13,7 @@ import jakarta.annotation.Resource;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Tag(name = "运动记录管理")
 @RestController
@@ -29,6 +30,12 @@ public class SportRecordController {
         record.setUserId(StpUtil.getLoginIdAsLong());
         if (record.getRecordTime() == null) {
             record.setRecordTime(LocalDateTime.now());
+        }
+        if (record.getDurationMin() == null) {
+            record.setDurationMin(0);
+        }
+        if (hasOverlap(record.getUserId(), record.getRecordTime(), record.getDurationMin(), null)) {
+            return R.error("运动记录时间与已有记录重叠");
         }
         sportRecordService.save(record);
         return R.success();
@@ -56,6 +63,15 @@ public class SportRecordController {
             return R.error("无权操作");
         }
         record.setUserId(StpUtil.getLoginIdAsLong());
+        if (record.getRecordTime() == null) {
+            record.setRecordTime(dbRecord.getRecordTime());
+        }
+        if (record.getDurationMin() == null) {
+            record.setDurationMin(Objects.requireNonNullElse(dbRecord.getDurationMin(), 0));
+        }
+        if (hasOverlap(record.getUserId(), record.getRecordTime(), record.getDurationMin(), record.getId())) {
+            return R.error("运动记录时间与已有记录重叠");
+        }
         sportRecordService.updateById(record);
         return R.success();
     }
@@ -80,5 +96,17 @@ public class SportRecordController {
         }
         queryWrapper.orderByDesc(SportRecord::getRecordTime);
         return R.data(sportRecordService.page(page, queryWrapper));
+    }
+
+    private boolean hasOverlap(Long userId, LocalDateTime start, Integer durationMin, Long excludeId) {
+        LocalDateTime end = start.plusMinutes(durationMin == null ? 0 : durationMin);
+        LambdaQueryWrapper<SportRecord> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(SportRecord::getUserId, userId);
+        wrapper.lt(SportRecord::getRecordTime, end);
+        wrapper.apply("DATE_ADD(record_time, INTERVAL duration_min MINUTE) > {0}", start);
+        if (excludeId != null) {
+            wrapper.ne(SportRecord::getId, excludeId);
+        }
+        return sportRecordService.count(wrapper) > 0;
     }
 }

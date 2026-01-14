@@ -17,7 +17,7 @@ export const updateSportRecord = (data: any) => {
 
 // 删除运动记录
 export const deleteSportRecord = (id: number) => {
-  return post('/api/sport/delete', { id }); // 注意后端接收参数方式，如果是@RequestParam可能需要调整为params
+  return post(`/api/sport/delete?id=${id}`, {}); 
 };
 
 // 统计概览
